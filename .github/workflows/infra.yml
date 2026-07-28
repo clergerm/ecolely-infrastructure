@@ -18,7 +18,7 @@ env:
 
 jobs:
   terraform:
-    name: Terraform Validate
+    name: Terraform plan
     runs-on: ubuntu-latest
     environment: dev
 
@@ -59,11 +59,8 @@ jobs:
       - name: Generate readable Terraform plan
         run: terraform show -no-color tfplan > tfplan.txt
 
-
       - name: Publish Terraform plan summary
         run: |
-          echo "## Terraform Plan" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
           echo '```terraform' >> $GITHUB_STEP_SUMMARY
           cat tfplan.txt >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY

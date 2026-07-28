@@ -20,6 +20,7 @@ jobs:
   terraform:
     name: Terraform Validate
     runs-on: ubuntu-latest
+    environment: dev
 
     steps:
       - name: Checkout repository

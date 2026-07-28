@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'dev' }}
     env:
-      DEPLOY_ENV: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'dev' }}
+      DEPLOY_ENVIRONMENT: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'dev' }}
 
     steps:
       - name: Checkout repository
@@ -56,20 +56,20 @@ jobs:
         run: terraform fmt -check
 
       - name: Terraform Init
-        run: terraform init -backend-config="backend-${{ env.DEPLOY_ENV }}.tfvars"
+        run: terraform init -backend-config="backend-${{ env.DEPLOY_ENVIRONMENT }}.tfvars"
 
       - name: Terraform Validate
         run: terraform validate
 
       - name: Terraform Plan
-        run: terraform plan -var-file="ecolely-${{ env.DEPLOY_ENV }}.tfvars" -out=tfplan
+        run: terraform plan -var-file="ecolely-${{ env.DEPLOY_ENVIRONMENT }}.tfvars" -out=tfplan
 
       - name: Generate readable Terraform plan
         run: terraform show -no-color tfplan > tfplan.txt
 
       - name: Publish Terraform plan summary
         run: |
-          echo "## Terraform Plan (${{ env.DEPLOY_ENV }})" >> $GITHUB_STEP_SUMMARY
+          echo "## Terraform Plan (${{ env.DEPLOY_ENVIRONMENT }})" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo '```terraform' >> $GITHUB_STEP_SUMMARY
           cat tfplan.txt >> $GITHUB_STEP_SUMMARY

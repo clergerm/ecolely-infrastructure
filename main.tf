@@ -7,7 +7,7 @@
 
 resource "aws_ecr_repository" "service" {
   name                 = "ecolely-service-${var.environment}"
-  image_tag_mutability = "MUTABLE"
+  image_tag_mutability = "IMMUTABLE"
 
   encryption_configuration {
     encryption_type = "AES256"
@@ -21,7 +21,7 @@ resource "aws_ecr_lifecycle_policy" "service" {
     rules = [
       {
         rulePriority = 1
-        description  = "Retaining only the latest 3 images."
+        description  = "Retain only the latest 3 images."
 
         selection = {
           tagStatus   = "any"

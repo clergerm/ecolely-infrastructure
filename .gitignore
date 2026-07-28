@@ -1,0 +1,18 @@
+# Terraform working directories
+.terraform/
+
+# Terraform state files
+*.tfstate
+*.tfstate.*
+
+# Terraform plan files
+*.tfplan
+
+# Terraform crash logs
+crash.log
+crash.*.log
+
+# IntelliJ IDEA
+.idea/
+*.iml
+out/

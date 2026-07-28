@@ -55,3 +55,15 @@ jobs:
           terraform plan \
             -var-file="ecolely-dev.tfvars" \
             -out=tfplan
+
+      - name: Generate readable Terraform plan
+        run: terraform show -no-color tfplan > tfplan.txt
+
+
+      - name: Publish Terraform plan summary
+        run: |
+          echo "## Terraform Plan" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo '```terraform' >> $GITHUB_STEP_SUMMARY
+          cat tfplan.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY

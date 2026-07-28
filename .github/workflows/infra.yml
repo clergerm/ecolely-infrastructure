@@ -12,6 +12,7 @@ on:
 permissions:
   id-token: write
   contents: read
+  pull-requests: write
 
 env:
   AWS_REGION: ${{ vars.AWS_REGION }}
@@ -64,3 +65,28 @@ jobs:
           echo '```terraform' >> $GITHUB_STEP_SUMMARY
           cat tfplan.txt >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: Comment Terraform Plan
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+
+            const plan = fs.readFileSync('tfplan.txt', 'utf8');
+
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `## Terraform Plan
+
+            <details>
+            <summary>Show Terraform Plan</summary>
+
+            \`\`\`terraform
+            ${plan}
+            \`\`\`
+
+            </details>`
+            });

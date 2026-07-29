@@ -17,24 +17,22 @@ resource "aws_ecr_repository" "service" {
 resource "aws_ecr_lifecycle_policy" "service" {
   repository = aws_ecr_repository.service.name
 
-  policy = jsonencode({
-    rules = [
-      {
-        rulePriority = 1
-        description  = "Retain only the latest 3 images."
+  policy = local.ecr_lifecycle_policy
+}
 
-        selection = {
-          tagStatus   = "any"
-          countType   = "imageCountMoreThan"
-          countNumber = 3
-        }
+resource "aws_ecr_repository" "ui" {
+  name                 = "ecolely-ui-${var.environment}"
+  image_tag_mutability = "IMMUTABLE"
 
-        action = {
-          type = "expire"
-        }
-      }
-    ]
-  })
+  encryption_configuration {
+    encryption_type = "AES256"
+  }
+}
+
+resource "aws_ecr_lifecycle_policy" "ui" {
+  repository = aws_ecr_repository.ui.name
+
+  policy = local.ecr_lifecycle_policy
 }
 
 resource "aws_ecr_registry_scanning_configuration" "registry_scanning" {
